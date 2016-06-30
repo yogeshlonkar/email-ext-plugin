@@ -13,6 +13,9 @@ f.section(title: _("Extended E-mail Notification")) {
   f.entry(help: "/descriptor/hudson.tasks.Mailer/help/defaultSuffix", title: _("Default user E-mail suffix")) {
     input(type: "text", class: "setting-input", value: descriptor.defaultSuffix, name: "ext_mailer_default_suffix") 
   }
+  f.entry(help: "/plugin/email-ext/help/globalConfig/replaceJunk.html", title: _("Junk to be replaced from generated E-mail ")) {
+    input(type: "text", class: "setting-input", value: descriptor.replaceJunk, name: "ext_mailer_replace_junk") 
+  }
   f.advanced() {
     f.optionalBlock(help: "/help/tasks/mailer/smtpAuth.html", checked: descriptor.smtpAuthUsername!=null, name: "ext_mailer_use_smtp_auth", title: _("Use SMTP Authentication")) {
       f.entry(title: _("User Name")) {

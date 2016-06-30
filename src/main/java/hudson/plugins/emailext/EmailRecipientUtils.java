@@ -36,13 +36,14 @@ public class EmailRecipientUtils {
     public static Set<InternetAddress> convertRecipientString(String recipientList, EnvVars envVars, int type)
         throws AddressException, UnsupportedEncodingException {
         final Set<InternetAddress> internetAddresses = new LinkedHashSet<>();
-        if (!StringUtils.isBlank(recipientList)) {
+        if (!StringUtils.isBlank(recipientList)) { 
             final String expandedRecipientList = fixupDelimiters(envVars.expand(recipientList));
             InternetAddress[] all = InternetAddress.parse(expandedRecipientList.replace("bcc:", "").replace("cc:", ""));
             final Set<InternetAddress> to = new LinkedHashSet<>();
             final Set<InternetAddress> cc = new LinkedHashSet<>();
             final Set<InternetAddress> bcc = new LinkedHashSet<>();
             final String defaultSuffix = ExtendedEmailPublisher.descriptor().getDefaultSuffix();
+            final String replaceJunk = ExtendedEmailPublisher.descriptor().getReplaceJunk();
 
             for(InternetAddress address : all) {
                 if(address.getPersonal() != null) {
@@ -85,6 +86,11 @@ public class EmailRecipientUtils {
                     }
                 }
 
+                if(replaceJunk != null && !replaceJunk.trim().isEmpty()) {
+                	for(String toReplace: replaceJunk.trim().split(",")) {
+                		 address.setAddress(address.getAddress().replace(toReplace, ""));
+                	}
+                }
                 if(!address.getAddress().contains("@") && defaultSuffix != null && defaultSuffix.contains("@")) {
                     address.setAddress(address.getAddress() + defaultSuffix);
                 }

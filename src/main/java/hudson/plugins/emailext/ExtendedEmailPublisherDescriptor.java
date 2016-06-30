@@ -39,6 +39,8 @@ public final class ExtendedEmailPublisherDescriptor extends BuildStepDescriptor<
      * changelog, to send e-mails. Null if not configured.
      */
     private String defaultSuffix;
+    
+    private String replaceJunk; 
 
     /**
      * Jenkins's own URL, to put into the e-mail.
@@ -185,8 +187,16 @@ public final class ExtendedEmailPublisherDescriptor extends BuildStepDescriptor<
     public void setDefaultSuffix(String defaultSuffix) {
         this.defaultSuffix = defaultSuffix;
     }
+    
+    public String getReplaceJunk() {
+		return replaceJunk;
+	}
 
-    public Session createSession() {
+	public void setReplaceJunk(String replaceJunk) {
+		this.replaceJunk = replaceJunk;
+	}
+
+	public Session createSession() {
         Properties props = new Properties(System.getProperties());
         if (smtpHost != null) {
             props.put("mail.smtp.host", smtpHost);
@@ -374,6 +384,7 @@ public final class ExtendedEmailPublisherDescriptor extends BuildStepDescriptor<
         // Configure the smtp server
         smtpHost = nullify(req.getParameter("ext_mailer_smtp_server"));
         defaultSuffix = nullify(req.getParameter("ext_mailer_default_suffix"));
+        replaceJunk = nullify(req.getParameter("ext_mailer_replace_junk"));
 
         // specify authentication information
         if (req.hasParameter("ext_mailer_use_smtp_auth")) {

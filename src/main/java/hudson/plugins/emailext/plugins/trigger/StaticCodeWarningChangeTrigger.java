@@ -23,11 +23,11 @@ import hudson.plugins.pmd.PmdPublisher;
 import hudson.plugins.pmd.PmdResult;
 import hudson.plugins.pmd.PmdResultAction;
 import hudson.tasks.Publisher;
-import net.sf.json.JSONObject;
+import net.sf.json.JSONObject; 
 
 public class StaticCodeWarningChangeTrigger extends EmailTrigger {
 
-	public static final String TRIGGER_NAME = "Static Code Warning Changes";
+	public static final String TRIGGER_NAME = "Static Code Warning Increase";
 
 	protected String buildId;
 
