@@ -63,7 +63,7 @@ public class StaticCodeWarningChangeTrigger extends EmailTrigger {
 			BuildResult buildResultNew = build.getAction(class1).getResult();
 			if(buildResultNew != null && buildResultOld != null) {
 				listener.getLogger().println("[Email-ext] high priority warnings, old count:" + buildResultOld.getNumberOfHighPriorityWarnings() + " new count:" + buildResultNew.getNumberOfHighPriorityWarnings());
-				if(buildResultNew.getNumberOfHighPriorityWarnings() <= buildResultOld.getNumberOfHighPriorityWarnings()) {
+				if(buildResultNew.getNumberOfHighPriorityWarnings() <= buildResultOld.getNumberOfHighPriorityWarnings() && buildResultNew.getNumberOfNormalPriorityWarnings() <= buildResultOld.getNumberOfNormalPriorityWarnings()) {
 					return false;
 				}
 			}
