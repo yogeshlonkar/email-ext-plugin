@@ -136,17 +136,18 @@ public class JellyScriptContent extends AbstractEvalContent {
 	private <T extends AbstractResultAction>  StaticCodeWarningChange populateDiffCounts(AbstractBuild<?, ?> build, AbstractBuild<?, ?> oldBuild,
 			Class<T> class1) {
 		StaticCodeWarningChange change = null;
-		hudson.plugins.analysis.core.BuildResult buildResultOld = oldBuild.getAction(class1).getResult();
-		hudson.plugins.analysis.core.BuildResult buildResultNew = build.getAction(class1).getResult();
-		
-		if(buildResultNew != null && buildResultOld != null) {
-			change = new StaticCodeWarningChange();
-			change.setType(oldBuild.getAction(class1).getDisplayName());
-			change.setTotalWarnings(buildResultNew.getNumberOfWarnings() - buildResultOld.getNumberOfWarnings());
-			change.setHighWarnings(buildResultNew.getNumberOfHighPriorityWarnings() - buildResultOld.getNumberOfHighPriorityWarnings());
-			change.setNormalWarnings(buildResultNew.getNumberOfNormalPriorityWarnings() - buildResultOld.getNumberOfNormalPriorityWarnings());
-			change.setLowWarnings(buildResultNew.getNumberOfLowPriorityWarnings() - buildResultOld.getNumberOfLowPriorityWarnings());
-			change.setErrors(diffErrors(buildResultOld.getAnnotations(), buildResultNew.getAnnotations()));
+		if(oldBuild.getAction(class1) != null && build.getAction(class1) != null) {
+			hudson.plugins.analysis.core.BuildResult buildResultOld = oldBuild.getAction(class1).getResult();
+			hudson.plugins.analysis.core.BuildResult buildResultNew = build.getAction(class1).getResult();
+			if(buildResultNew != null && buildResultOld != null) {
+				change = new StaticCodeWarningChange();
+				change.setType(oldBuild.getAction(class1).getDisplayName());
+				change.setTotalWarnings(buildResultNew.getNumberOfWarnings() - buildResultOld.getNumberOfWarnings());
+				change.setHighWarnings(buildResultNew.getNumberOfHighPriorityWarnings() - buildResultOld.getNumberOfHighPriorityWarnings());
+				change.setNormalWarnings(buildResultNew.getNumberOfNormalPriorityWarnings() - buildResultOld.getNumberOfNormalPriorityWarnings());
+				change.setLowWarnings(buildResultNew.getNumberOfLowPriorityWarnings() - buildResultOld.getNumberOfLowPriorityWarnings());
+				change.setErrors(diffErrors(buildResultOld.getAnnotations(), buildResultNew.getAnnotations()));
+			}
 		}
 		return change;
 	}
