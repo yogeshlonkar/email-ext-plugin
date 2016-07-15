@@ -24,6 +24,8 @@ import org.jenkinsci.lib.configprovider.ConfigProvider;
 import org.jenkinsci.plugins.tokenmacro.MacroEvaluationException;
 import org.xml.sax.InputSource;
 
+import com.google.common.collect.Sets;
+
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -32,8 +34,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 @EmailToken
 public class JellyScriptContent extends AbstractEvalContent {
@@ -146,27 +150,50 @@ public class JellyScriptContent extends AbstractEvalContent {
 				change.setHighWarnings(buildResultNew.getNumberOfHighPriorityWarnings() - buildResultOld.getNumberOfHighPriorityWarnings());
 				change.setNormalWarnings(buildResultNew.getNumberOfNormalPriorityWarnings() - buildResultOld.getNumberOfNormalPriorityWarnings());
 				change.setLowWarnings(buildResultNew.getNumberOfLowPriorityWarnings() - buildResultOld.getNumberOfLowPriorityWarnings());
-				change.setErrors(diffErrors(buildResultOld.getAnnotations(), buildResultNew.getAnnotations()));
+				change.setErrors(removeDuplicates(difference(buildResultNew.getAnnotations(), buildResultOld.getAnnotations()),buildResultOld.getAnnotations()));
 			}
 		}
 		return change;
 	}
 
-	private  <T extends AbstractResultAction> List<FileAnnotation> diffErrors(Collection<FileAnnotation> collection, Collection<FileAnnotation> collection2) {
-		List<FileAnnotation> error = new ArrayList<>();
-		if(collection2 != null) {
-			error.addAll(collection2);
+	private  <T extends AbstractResultAction> Set<FileAnnotation> difference(Set<FileAnnotation> target, Set<FileAnnotation> previous) {
+		Set<FileAnnotation> difference = new HashSet<>();
+		if(target != null) {
+			difference.addAll(target);
 		}
-		if(collection != null) {
-			error.removeAll(collection);
+		if(previous != null) {
+			difference.removeAll(previous);
 		}
-		Iterator<FileAnnotation> iterator = error.iterator();
+		
+		Iterator<FileAnnotation> iterator = difference.iterator();
 		while (iterator.hasNext()) {
 			AbstractAnnotation fileAnnotation = (AbstractAnnotation) iterator.next();
 			if(Priority.NORMAL.compareTo(fileAnnotation.getPriority()) < 0) {
 				iterator.remove();
 			}
 		}
-		return error;
+		return difference;
 	}
+	
+    private <T extends AbstractResultAction> Set<FileAnnotation> removeDuplicates(final Set<FileAnnotation> targetSet, final Set<FileAnnotation> previous) {
+        Set<Long> otherHashCodes = extractHashCodes(previous);
+        Set<FileAnnotation> duplicates = Sets.newHashSet();
+        for (FileAnnotation annotation : targetSet) {
+            if (otherHashCodes.contains(annotation.getContextHashCode())) {
+                duplicates.add(annotation);
+            }
+        }
+
+        targetSet.removeAll(duplicates);
+        return targetSet;
+    }
+    
+    private Set<Long> extractHashCodes(final Set<FileAnnotation> previous) {
+        HashSet<Long> hashCodes = new HashSet<Long>();
+        for (FileAnnotation annotation : previous) {
+            hashCodes.add(annotation.getContextHashCode());
+        }
+        return hashCodes;
+    }
+
 }

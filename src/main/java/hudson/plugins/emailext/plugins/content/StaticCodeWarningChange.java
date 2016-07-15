@@ -1,6 +1,6 @@
 package hudson.plugins.emailext.plugins.content;
 
-import java.util.List;
+import java.util.Set;
 
 import hudson.plugins.analysis.util.model.FileAnnotation;
 
@@ -26,7 +26,7 @@ public class StaticCodeWarningChange {
 	/** difference low warnings*/
 	private int lowWarnings;
 	
-	private List<FileAnnotation> errors;
+	private Set<FileAnnotation> errors;
 
 	public int getTotalWarnings() {
 		return totalWarnings;
@@ -68,11 +68,11 @@ public class StaticCodeWarningChange {
 		this.type = type;
 	}
 
-	public List<FileAnnotation> getErrors() {
+	public Set<FileAnnotation> getErrors() {
 		return errors;
 	}
 
-	public void setErrors(List<FileAnnotation> errors) {
+	public void setErrors(Set<FileAnnotation> errors) {
 		this.errors = errors;
 	}
 

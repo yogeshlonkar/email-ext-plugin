@@ -226,6 +226,40 @@
           </table>
         </div>
       </j:if>
+      
+      <!-- CHANGE SET -->
+      <div class="content">
+        <j:set var="changeSet" value="${build.changeSet}" />
+        <j:if test="${changeSet!=null}">
+          <j:set var="hadChanges" value="false" />
+          <a href="${rooturl}${build.url}/changes">
+            <h1>Changes</h1>
+          </a>
+          <j:forEach var="cs" items="${changeSet}"
+            varStatus="loop">
+            <j:set var="hadChanges" value="true" />
+            <h2>${cs.msgAnnotated}</h2>
+            <p>
+              by
+              <em>${cs.author}</em>
+            </p>
+            <table>
+              <j:forEach var="p" items="${cs.getAffectedFiles()}">
+                <tr>
+                  <td width="10%">${spc}${p.getEditType().getName()}</td>
+                  <td>
+                    <tt>${p.getPath()}</tt>
+                  </td>
+                </tr>
+              </j:forEach>
+            </table>
+          </j:forEach>
+          <j:if test="${!hadChanges}">
+            <p>No Changes</p>
+          </j:if>
+          <br />
+        </j:if>
+      </div>
 	  
       <!-- HEALTH TEMPLATE -->
       <div class="content">
@@ -292,6 +326,7 @@
           <br />
         </div>
       </j:if>
+      
       <!-- JUnit TEMPLATE -->
       <j:set var="junitResultList" value="${it.JUnitTestResult}" />
       <j:if test="${junitResultList.isEmpty()!=true}">
